@@ -1,0 +1,15 @@
+
+#Host and port we will listen for requests on
+bind 0.0.0.0
+port <%= p("sentinel_port") %>
+
+#
+# "redis-cluster" is the name of our cluster
+#
+# each sentinel process is paired with a redis-server process
+#
+sentinel monitor redis-cluster <%= link("redis").instances.find {|redis| redis.bootstrap }.address %> <%= link("redis").p("port") %> 2
+sentinel auth-pass redis-cluster <%= link("redis").p("password") %>
+sentinel down-after-milliseconds redis-cluster <%= p('down_millis') %>
+sentinel parallel-syncs redis-cluster <%= p('parallel_sync') %>
+sentinel failover-timeout redis-cluster <%= p('failover_timeout') %>

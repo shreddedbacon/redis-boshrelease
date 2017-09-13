@@ -1,0 +1,39 @@
+#!/bin/bash
+
+set -e # exit immediately if a simple command exits with a non-zero status
+set -u # report the usage of uninitialized variables
+
+# Setup env vars and folders for the webapp_ctl script
+source /var/vcap/jobs/sentinel/helpers/ctl_setup.sh 'sentinel'
+
+export LANG=en_US.UTF-8\
+#$PIDFILE=/var/vcap/sys/run/redis/redis-sent.pid
+#echo redis-sent redis-sent $PIDFILE $(cat $PIDFILE)
+
+case $1 in
+
+  start)
+#    pid_guard $PIDFILE $JOB_NAME
+    exec redis-sentinel /var/vcap/jobs/sentinel/config/sentinel.conf
+    ;;
+
+  stop)
+    redis-cli -p 16379 shutdown
+#    kill_and_wait $PIDFILE
+
+    ;;
+
+  reload)
+    echo redis-sent reloading...
+    $JOB_DIR/bin/sent-ctl stop
+    $JOB_DIR/bin/sent-ctl start
+
+    ;;
+
+  *)
+    echo "Usage: sent-ctl {start|stop}"
+
+    ;;
+
+esac
+exit 0

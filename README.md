@@ -18,5 +18,5 @@ export BOSH_DEPLOYMENT=redis
 
 git clone https://github.com/cloudfoundry-community/redis-boshrelease.git
 cd redis-boshrelease
-bosh2 deploy manifests/redis.yml
+bosh2 deploy manifests/deployment.yml --vars-store=vars/redis.yml
 ```

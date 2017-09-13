@@ -1,0 +1,55 @@
+---
+name: sentinel
+
+templates:
+  bin/ctl: bin/ctl
+  bin/health_check: bin/health_check
+  bin/monit_debugger: bin/monit_debugger
+  helpers/ctl_setup.sh: helpers/ctl_setup.sh
+  helpers/ctl_utils.sh: helpers/ctl_utils.sh
+  config/sentinel.conf.erb: config/sentinel.conf
+
+packages:
+  - redis
+
+properties: {}
+
+consumes:
+- name: redis
+  type: redis
+
+properties:
+  port:
+    description: Port to listen for requests to redis server
+    default: 6379
+  redis_save_intervals:
+    default:
+      - 900 1
+      - 300 10
+      - 60 10000
+    description: save <seconds> <changes>; save points to the rdb snapshot after #<seconds> seconds have passed if at least #<changes> key changes have occurred
+
+  consul.service.name:
+    description: Name for advertising/discovering this service over consul (defaults to deployment name)
+
+  health.interval:
+    description: Interval for consul to perform health checks
+    default: "20s"
+  health.disk.critical:
+    description: Percentage of persistent disk full to trigger critial health alert
+    default: 98
+  health.disk.warning:
+    description: Percentage of persistent disk full to trigger warning health alert
+    default: 50
+  sentinel_port:
+    description: port sentinel should run on
+    default: 16379
+  down_millis:
+    description: down after milliseconds
+    default: 250
+  parallel_sync:
+    description: parallel syncs (1 is good)
+    default: 1
+  failover_timeout:
+    description: failover timeout
+    default: 100
